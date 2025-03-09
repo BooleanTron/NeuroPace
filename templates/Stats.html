@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            display: flex;
+            height: 100vh;
+            background: white;
+            overflow: hidden;
+            color: black;
+        }
+        .sidebar {
+            width: 220px;
+            background: #a8d5ba;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            color: black;
+            border-top-right-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);
+        }
+        .sidebar a, .sidebar .current-page {
+            text-decoration: none;
+            color: black;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            transition: 0.3s;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .sidebar .current-page {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        .sidebar a:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: black;
+        }
+        .chart-container {
+            width: 80%;
+            max-width: 800px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="{{url_for('home')}}">🏠 Home</a>
+        <a href="daily-mood-score">📅 Daily Mood Score</a>
+        <a href="{{url_for('stats')}}">📊 Statistics</a>
+        <a href="{{url_for('activity')}}">🧘 Mental Health Activity</a>
+        <a onclick="showChat()" href="{{url_for('chatdoctor')}}">👨‍⚕ Doctor Consultation</a>
+    </div>
+    
+    <div class="content" id="statistics-content">
+        <h1>Statistics</h1>
+        <div class="chart-container">
+            <img src="static/weekly.jpg" width="400px">
+        </div>
+        <div class="chart-container" style="margin-top: 20px;">
+            <img src="static/monthly.jpg" width="500px">
+        </div>
+    </div>
+    
+    
+</body>
+</html>

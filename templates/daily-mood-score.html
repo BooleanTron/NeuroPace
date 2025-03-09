@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Mood Score</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            display: flex;
+            height: 100vh;
+            background: #f8f9fa;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 220px;
+            background: #a3d2ca;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            color: black;
+            border-top-right-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+        .sidebar a, .sidebar .current-page {
+            text-decoration: none;
+            color: black;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+        .sidebar .current-page {
+            background: rgba(0, 0, 0, 0.2);
+            cursor: default;
+        }
+        .sidebar a:hover {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #34495e;
+        }
+        .mood-bar-container {
+            position: relative;
+            height: 35px;
+            background: #e0e0e0;
+            border-radius: 20px;
+            margin: 20px 0;
+            width: 100%;
+            max-width: 500px;
+        }
+        .mood-bar {
+            height: 100%;
+            border-radius: 20px;
+            transition: width 1s ease-in-out;
+        }
+        .mood-bar.low-score {
+            background: linear-gradient(90deg, red, orange, yellow);
+        }
+        .mood-bar.high-score {
+            background: linear-gradient(90deg, red, orange, yellow, lightgreen, green);
+        }
+        .mood-score-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: black;
+            font-weight: bold;
+        }
+        .emoji {
+            font-size: 2rem;
+            margin-left: 10px;
+        }
+        .suggestions {
+            margin-top: 20px;
+            font-size: 1rem;
+            color: #34495e;
+        }
+        .home-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #34495e;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .home-button:hover {
+            background-color: #2c3e50;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <a href="{{url_for('home')}}">🏠 Home</a>
+        <a href="daily-mood-score">📅 Daily Mood Score</a>
+        <a href="{{url_for('stats')}}">📊 Statistics</a>
+        <a href="{{url_for('activity')}}">🧘 Mental Health Activity</a>
+        <a onclick="showChat()" href="{{url_for('chatdoctor')}}">👨‍⚕ Doctor Consultation</a>
+    </div>
+
+    <div class="container">
+        <div style="display: flex; align-items: center; justify-content: center;">
+            <h1>Your Daily Mood Score</h1>
+            <div class="emoji" id="emoji">😐</div>
+        </div>
+        
+        <div class="mood-bar-container">
+            <div class="mood-bar" id="mood-bar"></div>
+            <div class="mood-score-label" id="mood-score-label">{{moodscore}}/10</div>
+        </div>
+        
+        <div class="suggestions">
+            <p>Keep up the good work! Try incorporating more activities that make you feel happy and relaxed.</p>
+        </div>
+    </div>
+
+    <script>
+        // Simulating the score you receive from your Python backend
+        const moodScore = {{moodscore}};  // Replace with dynamic data from Flask backend
+
+        // Set the width of the mood bar based on the score
+        const moodBar = document.getElementById('mood-bar');
+        const moodLabel = document.getElementById('mood-score-label');
+        const emojiDisplay = document.getElementById('emoji');
+
+        // Calculate percentage width for the bar (since it's based on a 1-10 scale)
+        const percentage = (moodScore / 10) * 100;
+
+        // Update the mood bar and label dynamically
+        moodBar.style.width = percentage + '%';
+        moodLabel.textContent = moodScore.toFixed(1) + '/10';
+
+        // Update the color based on the score
+        if (moodScore < 5) {
+            moodBar.classList.add('low-score');
+        } else {
+            moodBar.classList.add('high-score');
+        }
+
+        // Display the appropriate emoji based on the mood score
+        if (moodScore <= 2) {
+            emojiDisplay.textContent = '😩';
+        } else if (moodScore <= 4) {
+            emojiDisplay.textContent = '☹';
+        } else if (moodScore === 5) {
+            emojiDisplay.textContent = '😐';
+        } else if (moodScore >= 6 && moodScore <= 8) {
+            emojiDisplay.textContent = '🙂';
+        } else if (moodScore >= 9) {
+            emojiDisplay.textContent = '😁';
+        }
+    </script>
+</body>
+</html>

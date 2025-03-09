@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Consultation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            display: flex;
+            height: 100vh;
+            background: white;
+            overflow: hidden;
+            color: black;
+        }
+        .chat-container {
+    width: 400px;
+    margin: auto;
+    margin-left: 220px; /* Adjusted for left navbar */
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Chat Box */
+.chat-box {
+    height: 350px;
+    overflow-y: auto;
+    border-radius: 8px;
+    padding: 15px;
+    background: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    scroll-behavior: smooth;
+}
+
+/* Messages */
+.message {
+    padding: 10px 15px;
+    margin: 5px 0;
+    border-radius: 18px;
+    max-width: 75%;
+    font-size: 14px;
+    word-wrap: break-word;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.user-message {
+    background: linear-gradient(135deg, #a0e5a1, #76c893);
+    color: #0b3d02;
+    align-self: flex-end;
+    text-align: right;
+}
+
+.bot-message {
+    background: linear-gradient(135deg, #ececec, #dcdcdc);
+    color: #333;
+    align-self: flex-start;
+    text-align: left;
+}
+
+/* Chat Input */
+.chat-input {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    transition: 0.3s;
+}
+
+input:focus {
+    border-color: #76c893;
+    box-shadow: 0px 0px 5px rgba(118, 200, 147, 0.5);
+}
+
+/* Send Button */
+button {
+    background: linear-gradient(135deg, #76c893, #4fa070);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: bold;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #4fa070, #388e5c);
+    transform: scale(1.05);
+}
+
+        .sidebar {
+            width: 220px;
+            background: #a8d5ba;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            color: black;
+            border-top-right-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);
+        }
+        .sidebar a, .sidebar .current-page {
+            text-decoration: none;
+            color: black;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            transition: 0.3s;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .sidebar .current-page {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        .sidebar a:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        h1 {
+            margin: 20px auto;
+            font-size: 3em;
+            color: black;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="{{url_for('home')}}">🏠 Home</a>
+        <a href="daily-mood-score">📅 Daily Mood Score</a>
+        <a href="{{url_for('stats')}}">📊 Statistics</a>
+        <a href="{{url_for('activity')}}">🧘 Mental Health Activity</a>
+        <a onclick="showChat()" href="{{url_for('chatdoctor')}}">👨‍⚕ Doctor Consultation</a>
+    </div>
+    <h1>Doctor Consultation</h1>
+    <div class="chat-container">
+        <div class="chat-box" id="chat-box"></div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Ask a doctor...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        function sendMessage() {
+            let userInput = document.getElementById("user-input").value.trim();
+            if (!userInput) return;
+
+            let chatBox = document.getElementById("chat-box");
+
+            // Create and append user message
+            let userMessage = document.createElement("div");
+            userMessage.classList.add("message", "user-message");
+            userMessage.textContent = userInput;
+            chatBox.appendChild(userMessage);
+
+            document.getElementById("user-input").value = "";
+
+            // Send request to backend
+            fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: userInput })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Create and append bot message
+                let botMessage = document.createElement("div");
+                botMessage.classList.add("message", "bot-message");
+                botMessage.textContent = data.response;
+                chatBox.appendChild(botMessage);
+
+                // Auto-scroll to latest message
+                chatBox.scrollTop = chatBox.scrollHeight;
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+</body>
+</html>

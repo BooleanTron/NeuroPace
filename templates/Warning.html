@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High Stress Alert</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #e3fdfd, #ffe6e6);
+            font-family: 'Arial', sans-serif;
+            position: relative;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+            animation: fadeIn 0.8s ease;
+        }
+
+        h1 {
+            color: #ff4d4d;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            animation: pulse 1s infinite;
+        }
+
+        .timer {
+            margin: 20px auto;
+            width: 150px;
+            height: 150px;
+            position: relative;
+        }
+
+        .timer svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .timer circle {
+            stroke-width: 10;
+            fill: none;
+            stroke-linecap: round;
+        }
+
+        .timer-bg {
+            stroke: #f1f1f1;
+        }
+
+        .timer-fg {
+            stroke: #ff6b6b;
+            animation: countdown 15s linear forwards;
+        }
+
+        .steps {
+            margin: 30px 0;
+            padding: 15px;
+            background-color: #f7f7f7;
+            border-radius: 15px;
+            text-align: left;
+            font-size: 1.1em;
+            color: #333;
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .home-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: background-color 0.3s;
+            z-index: 100;
+        }
+
+        .home-btn:hover {
+            background-color: #45a049;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes countdown {
+            0% { stroke-dashoffset: 0; }
+            100% { stroke-dashoffset: 377; }
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2em; }
+            .timer { width: 120px; height: 120px; }
+            .steps { font-size: 1em; }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 1.8em; }
+            .timer { width: 100px; height: 100px; }
+            .steps { font-size: 0.9em; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Home button outside the container -->
+    <a href="/" class="home-btn">Home</a>
+
+    <!-- Main container -->
+    <div class="container">
+        <h1>Warning! High Stress Levels</h1>
+        
+        <div class="timer">
+            <svg width="150" height="150">
+                <circle class="timer-bg" cx="75" cy="75" r="60"></circle>
+                <circle class="timer-fg" cx="75" cy="75" r="60" stroke-dasharray="377" stroke-dashoffset="0"></circle>
+            </svg>
+        </div>
+
+        <p>Take a deep breath for 15 seconds...</p>
+
+        <div class="steps" id="steps-container">
+            <!-- Recommendations from the backend will be injected here -->
+            {{ steps }}
+        </div>
+    </div>
+
+    <script>
+        // Timer logic
+        const pieTimer = document.querySelector('.timer-fg');
+        const radius = pieTimer.r.baseVal.value;
+        const circumference = radius * 2 * Math.PI;
+
+        pieTimer.style.strokeDasharray = `${circumference}`;
+        pieTimer.style.strokeDashoffset = '0';
+
+        function setProgress(percent) {
+            const offset = (percent / 100) * circumference;
+            pieTimer.style.strokeDashoffset = offset;
+        }
+
+        let timer = 15;  // Set 15 seconds
+        const interval = setInterval(() => {
+            const percent = ((15 - timer) / 15) * 100;
+            setProgress(percent);
+            timer--;
+            if (timer < 0) clearInterval(interval);
+        }, 1000);
+    </script>
+
+</body>
+</html>

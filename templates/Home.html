@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Mood</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            display: flex;
+            height: 100vh;
+            background: white;
+            overflow: hidden;
+            color: black;
+        }
+        .sidebar {
+            width: 220px;
+            background: #a8d5ba;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            color: black;
+            border-top-right-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);
+        }
+        .sidebar a, .sidebar .current-page {
+            text-decoration: none;
+            color: black;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            transition: 0.3s;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .sidebar .current-page {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        .sidebar a:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            animation: fadeIn 1s ease-in-out;
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: black;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .mood-box {
+            width: 30vw;
+            height: 30vh;
+            background: rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 5em;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            transform: scale(0.9);
+            animation: popIn 0.5s ease-in-out forwards;
+        }
+        .mood-info {
+            width: 30vw;
+            height: 30vh;
+            background: rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(10px);
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            font-size: 1.2em;
+            overflow-y: auto;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.7s ease-in-out 0.5s forwards;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="{{url_for('home')}}">🏠 Home</a>
+        <a href="daily-mood-score">📅 Daily Mood Score</a>
+        <a href="{{url_for('stats')}}">📊 Statistics</a>
+        <a href="{{url_for('activity')}}">🧘 Mental Health Activity</a>
+        <a onclick="showChat()" href="{{url_for('chatdoctor')}}">👨‍⚕ Doctor Consultation</a>
+    </div>
+    
+    <!-- Current Mood Page -->
+    <div class="content" id="home-content">
+        <h1>Current Mood</h1>
+        <div class="mood-box">{{ emoji }}</div> 
+        <div class="mood-info">{{ mood_text }}</div>
+    </div>
+</body>
+</html>
